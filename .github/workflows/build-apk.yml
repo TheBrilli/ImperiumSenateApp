@@ -1,4 +1,4 @@
-name: Build Android APK
+name: Build APK with EAS
 on:
   push:
     branches: [ main ]
@@ -15,13 +15,14 @@ jobs:
           node-version: '20'
       - name: Install dependencies
         run: npm install
-      - name: Install Expo CLI
-        run: npm install -g expo-cli
+      - name: Install EAS CLI
+        run: npm install -g eas-cli
       - name: Build APK
-        run: |
-          expo build:android --non-interactive --no-wait
+        run: eas build --platform android --profile preview --non-interactive
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: app-release.apk
-          path: app-release.apk
+          path: app-builds/*.apk
